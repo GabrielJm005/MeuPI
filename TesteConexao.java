@@ -18,17 +18,17 @@ public class TesteConexao {
             // Tenta conectar
             try (Connection conexao = DriverManager.getConnection(url, usuario, senha)) {
                 if (conexao != null) {
-                    JOptionPane.showMessageDialog(null, 
-                        "Conexão com o banco de dados estabelecida com sucesso!", 
-                        "Sucesso", 
+                    JOptionPane.showMessageDialog(null,
+                        "Conexão com o banco de dados estabelecida com sucesso!",
+                        "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Erro ao conectar ao banco de dados: " + e.getMessage(), 
-                "Erro", 
+            JOptionPane.showMessageDialog(null,
+                "Erro ao conectar ao banco de dados: " + e.getMessage(),
+                "Erro",
                 JOptionPane.ERROR_MESSAGE);
         }
     }
-} 
+}

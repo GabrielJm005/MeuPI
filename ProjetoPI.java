@@ -5,9 +5,9 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.time.LocalTime; 
+import java.time.LocalTime;
 import javax.imageio.ImageIO;
-import javax.swing.*; 
+import javax.swing.*;
 
 // Componentes básicos
 
@@ -129,18 +129,15 @@ public class ProjetoPI extends JFrame {
 
 // Tela de login
 class TelaLogin extends JFrame {
-    // Campos de texto
     private JTextField nomeUsuarioField;
     private JTextField nomeAdministradorField;
     private JPasswordField passwordField;
 
-    // Construtor
     public TelaLogin() {
         configurarJanela();
         initComponents();
     }
 
-    // Config da janela
     private void configurarJanela() {
         setTitle("Metrô day - Cadastro");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -150,7 +147,6 @@ class TelaLogin extends JFrame {
         setCursor(ProjetoPI.customCursor);
     }
 
-    // Inicia os botoes
     private void initComponents() {
         // Configura o painel principal
         Image backgroundImage = UIUtils.loadImage("imagens/imagenspi/imagem cadastro.jpg");
@@ -163,16 +159,70 @@ class TelaLogin extends JFrame {
         adicionarCampoSenha(mainPanel);
 
         // Add btn de entrar
-        JButton entrarButton = UIUtils.createInvisibleButton(
-            new Rectangle(480, 580, 400, 50),
-            this::entrarAction
-        );
+        JButton entrarButton = new JButton("");
+        entrarButton.setBounds(480, 520, 400, 80);
+        entrarButton.setFont(new Font("Trebuchet MS", Font.BOLD, 28));
+        entrarButton.setBackground(new Color(255, 0, 0)); // Vermelho
+        entrarButton.setForeground(Color.WHITE);
+        entrarButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+        entrarButton.setFocusPainted(false);
+        entrarButton.setOpaque(true);
+        entrarButton.setContentAreaFilled(false);
+        entrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nomeUsuario = nomeUsuarioField.getText();
+                String email = nomeAdministradorField.getText();
+                String senha = new String(passwordField.getPassword());
+
+                if (nomeUsuario.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+                    JOptionPane.showMessageDialog(TelaLogin.this,
+                        "Por favor, preencha todos os campos!",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    String url = "jdbc:mysql://localhost:3306/teste";
+                    String usuario = "root";
+                    String senhaDB = "@Joaopedro825";
+
+                    try (Connection conexao = DriverManager.getConnection(url, usuario, senhaDB)) {
+                        String sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+                        try (PreparedStatement ps = conexao.prepareStatement(sql)) {
+                            ps.setString(1, nomeUsuario);
+                            ps.setString(2, email);
+                            ps.setString(3, senha);
+                            ps.executeUpdate();
+
+                            JOptionPane.showMessageDialog(TelaLogin.this,
+                                "Cadastro realizado com sucesso!",
+                                "Sucesso",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                            nomeUsuarioField.setText("");
+                            nomeAdministradorField.setText("");
+                            passwordField.setText("");
+
+                            dispose();
+                            new TelaDeOpcoes().setVisible(true);
+                        }
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(TelaLogin.this,
+                        "Erro ao cadastrar: " + ex.getMessage(),
+                        "Erro", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         mainPanel.add(entrarButton);
         add(mainPanel);
     }
 
-    // campo do nome
-    private void adicionarCampoNomeUsuario(BackgroundPanel panel) {
+    private void adicionarCampoNomeUsuario(JPanel panel) {
         JLabel label = new JLabel("Nome do Usuário:");
         label.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
         label.setBounds(400, 270, 200, 30);
@@ -187,7 +237,6 @@ class TelaLogin extends JFrame {
         nomeUsuarioField.setCaretColor(Color.BLACK);
         panel.add(nomeUsuarioField);
 
-        // config pra esconder a caixa
         nomeUsuarioField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent evt) { update(); }
             public void removeUpdate(javax.swing.event.DocumentEvent evt) { update(); }
@@ -198,8 +247,7 @@ class TelaLogin extends JFrame {
         });
     }
 
-    // Add o email
-    private void adicionarCampoEmailAdministrador(BackgroundPanel panel) {
+    private void adicionarCampoEmailAdministrador(JPanel panel) {
         JLabel label = new JLabel("Email de Administrador:");
         label.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
         label.setBounds(400, 360, 220, 30);
@@ -214,7 +262,6 @@ class TelaLogin extends JFrame {
         nomeAdministradorField.setCaretColor(Color.BLACK);
         panel.add(nomeAdministradorField);
 
-        // esconde o campo
         nomeAdministradorField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent evt) { update(); }
             public void removeUpdate(javax.swing.event.DocumentEvent evt) { update(); }
@@ -225,8 +272,7 @@ class TelaLogin extends JFrame {
         });
     }
 
-    // Add senha
-    private void adicionarCampoSenha(BackgroundPanel panel) {
+    private void adicionarCampoSenha(JPanel panel) {
         JLabel label = new JLabel("Senha:");
         label.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
         label.setBounds(400, 445, 100, 30);
@@ -241,7 +287,6 @@ class TelaLogin extends JFrame {
         passwordField.setCaretColor(Color.BLACK);
         panel.add(passwordField);
 
-        // esconde campo tbm
         passwordField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent evt) { update(); }
             public void removeUpdate(javax.swing.event.DocumentEvent evt) { update(); }
@@ -251,65 +296,9 @@ class TelaLogin extends JFrame {
             }
         });
     }
-
-    // config de onde o botão "entrar" leva
-    private void entrarAction(ActionEvent evt) {
-        String nomeUsuario = nomeUsuarioField.getText();
-        String email = nomeAdministradorField.getText();
-        String senha = new String(passwordField.getPassword());
-
-        // Validações básicas
-        if (nomeUsuario.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Por favor, preencha todos os campos!", 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            // Carrega o driver JDBC
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Conecta ao banco de dados
-            String url = "jdbc:mysql://localhost:3306/teste";
-            String usuario = "root";
-            String senhaDB = "@Joaopedro825";
-
-            try (Connection conexao = DriverManager.getConnection(url, usuario, senhaDB)) {
-                // Prepara o comando SQL
-                String sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-                try (PreparedStatement ps = conexao.prepareStatement(sql)) {
-                    ps.setString(1, nomeUsuario);
-                    ps.setString(2, email);
-                    ps.setString(3, senha);
-                    ps.executeUpdate();
-
-                    JOptionPane.showMessageDialog(this, 
-                        "Cadastro realizado com sucesso!", 
-                        "Sucesso", 
-                        JOptionPane.INFORMATION_MESSAGE);
-
-                    // Limpa os campos
-                    nomeUsuarioField.setText("");
-                    nomeAdministradorField.setText("");
-                    passwordField.setText("");
-
-                    // Abre a próxima tela
-                    this.dispose();
-                    new TelaDeOpcoes().setVisible(true);
-                }
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Erro ao cadastrar: " + e.getMessage(), 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
 }
 
-// Tela de opções 
+// Tela de opções
 class TelaDeOpcoes extends JFrame {
     // Construtor
     public TelaDeOpcoes() {
@@ -334,18 +323,25 @@ class TelaDeOpcoes extends JFrame {
         BackgroundPanel panel = new BackgroundPanel(backgroundImage);
         panel.setLayout(null);
 
+        // Adiciona o texto informativo
+        JLabel textoInfo = new JLabel("<html><center>Aqui é seu menu principal, você pode ver seu <br> progresso geral ou começar o jogo!</center></html>");
+        textoInfo.setBounds(450, 255, 595, 60);
+        textoInfo.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+        textoInfo.setForeground(Color.BLACK);
+        panel.add(textoInfo);
+
         // botoes de ranking e jogar
-        JButton btnOpcao1 = UIUtils.createInvisibleButton(
+        JButton btnRanking = UIUtils.createInvisibleButton(
             new Rectangle(390, 341, 595, 80),
             evt -> abrirTelaDeRegras()
         );
-        panel.add(btnOpcao1);
+        panel.add(btnRanking);
 
-        JButton btnOpcao2 = UIUtils.createInvisibleButton(
+        JButton btnJogar = UIUtils.createInvisibleButton(
             new Rectangle(390, 442, 595, 80),
             evt -> abrirTelaDeRegras()
         );
-        panel.add(btnOpcao2);
+        panel.add(btnJogar);
 
         add(panel);
     }
@@ -439,7 +435,7 @@ class TelaPrincipal extends JFrame {
 
     // Inicializa os componentes
     private void initComponents() {
-        Image backgroundImage = UIUtils.loadImage("imagens/imagenspi/01 - Painel.jpg");
+        Image backgroundImage = UIUtils.loadImage("imagens/imagenspi/teste painel.jpg");
         BackgroundPanel mainPanel = new BackgroundPanel(backgroundImage);
         mainPanel.setLayout(null);
 
