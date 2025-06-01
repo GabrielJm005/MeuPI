@@ -1,0 +1,69 @@
+public class PojetoPi extends JFrame {
+
+    public PojetoPi() {
+        setTitle("Menu Metro Game");
+        setSize(1366, 768);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(null); // Layout absoluto para posicionar elementos manualmente
+
+        // Imagem de fundo (a sua imagem)
+        ImageIcon bgImage = new ImageIcon("caminho/para/sua/imagem.jpg");
+        JLabel background = new JLabel(bgImage);
+        background.setBounds(0, 0, 1366, 768);
+        add(background);
+
+        // Criando áreas clicáveis (transparentes)
+        JLabel btnJogadores = new JLabel();
+        btnJogadores.setBounds(160, 300, 300, 80); // ajuste conforme posição do botão na imagem
+        btnJogadores.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnJogadores.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Jogadores clicado!");
+                // ação para jogadores
+            }
+        });
+
+        JLabel btnRanking = new JLabel();
+        btnRanking.setBounds(740, 300, 300, 80); // ajuste conforme posição
+        btnRanking.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnRanking.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Ranking clicado!");
+                // ação para ranking
+            }
+        });
+
+        JLabel btnProgresso = new JLabel();
+        btnProgresso.setBounds(160, 420, 300, 80); // ajuste conforme posição
+        btnProgresso.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnProgresso.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Progresso clicado!");
+                // ação para progresso
+            }
+        });
+
+        JLabel btnJogar = new JLabel();
+        btnJogar.setBounds(740, 420, 300, 80); // ajuste conforme posição
+        btnJogar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnJogar.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Jogar clicado!");
+                // ação para jogar
+            }
+        });
+
+        // Adiciona os botões transparentes por cima do fundo
+        background.add(btnJogadores);
+        background.add(btnRanking);
+        background.add(btnProgresso);
+        background.add(btnJogar);
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new PojetoPi();
+    }
+}
